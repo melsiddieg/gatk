@@ -19,7 +19,6 @@ public final class AlignmentUtils {
     private static final EnumSet<CigarOperator> ALIGNED_TO_GENOME_OPERATORS = EnumSet.of(CigarOperator.M, CigarOperator.EQ, CigarOperator.X);
     private static final EnumSet<CigarOperator> ALIGNED_TO_GENOME_PLUS_SOFTCLIPS = EnumSet.of(CigarOperator.M, CigarOperator.EQ, CigarOperator.X, CigarOperator.S);
     public final static String HAPLOTYPE_TAG = "HC";
-    public final static String ACTIVE_REGION_TAG = "AR";
 
     // cannot be instantiated
     private AlignmentUtils() { }
