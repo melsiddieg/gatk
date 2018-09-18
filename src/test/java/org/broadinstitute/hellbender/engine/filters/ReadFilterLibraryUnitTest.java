@@ -809,11 +809,11 @@ public final class ReadFilterLibraryUnitTest {
         final GATKRead read = simpleGoodRead(createHeaderWithReadGroups());
         read.setAttribute(AddOriginalAlignmentTags.OA_TAG_NAME, "*,0,*,*,0,0;");
 
-        Assert.assertTrue(ReadFilterLibrary.CHIMERIC_OA_FILTER.test(read));
+        Assert.assertTrue(ReadFilterLibrary.NON_CHIMERIC_OA_FILTER.test(read));
 
         read.setAttribute(AddOriginalAlignmentTags.MATE_CONTIG_TAG_NAME, "chrM");
 
-        Assert.assertFalse(ReadFilterLibrary.CHIMERIC_OA_FILTER.test(read));
+        Assert.assertFalse(ReadFilterLibrary.NON_CHIMERIC_OA_FILTER.test(read));
     }
 
 }

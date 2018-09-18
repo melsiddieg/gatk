@@ -64,7 +64,7 @@ public class GATKVCFHeaderLines {
 
         //Mitochondrial M2-related filters
         addFilterLine(new VCFFilterHeaderLine(CHIMERIC_ORIGINAL_ALIGNMENT_FILTER_NAME, "NuMT variant with too many ALT reads originally from autosome"));
-        addFilterLine(new VCFFilterHeaderLine(TLOD_BY_DEPTH_FILTER_NAME, "TLOD divided by depth too low"));
+        addFilterLine(new VCFFilterHeaderLine(LOW_AVG_ALT_QUALITY_FILTER_NAME, "Low average alt quality"));
 
 
         addFormatLine(new VCFFormatHeaderLine(ALLELE_BALANCE_KEY, 1, VCFHeaderLineType.Float, "Allele balance for each het genotype"));
@@ -98,6 +98,8 @@ public class GATKVCFHeaderLines {
         addFormatLine(new VCFFormatHeaderLine(ROF_POSTERIOR_KEY, 1, VCFHeaderLineType.Float, "posterior probability of read orientation-based artifacts"));
         addFormatLine(new VCFFormatHeaderLine(ROF_PRIOR_KEY, 1, VCFHeaderLineType.Float, "prior probability of read orientation-based artifacts under the present referene context"));
         addFormatLine(new VCFFormatHeaderLine(ROF_TYPE_KEY, 1, VCFHeaderLineType.String, "type of read orientation artifact (F1R2 or F2R1)"));
+        addFormatLine(new VCFFormatHeaderLine(ORIGINAL_CONTIG_MISMATCH_KEY, 1, VCFHeaderLineType.Integer, "Number of alt reads whose original alignment doesn't match the current contig."));
+        addFormatLine(new VCFFormatHeaderLine(POTENTIAL_POLYMORPHIC_NUMT_KEY, 1, VCFHeaderLineType.String, "Potentially a polymorphic NuMT false positive rather than a real mitochondrial variant."));
 
         addInfoLine(new VCFInfoHeaderLine(MLE_ALLELE_COUNT_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Integer, "Maximum likelihood expectation (MLE) for the allele counts (not necessarily the same as the AC), for each ALT allele, in the same order as listed"));
         addInfoLine(new VCFInfoHeaderLine(MLE_ALLELE_FREQUENCY_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Float, "Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed"));

@@ -62,7 +62,7 @@ public class AddOriginalAlignmentTags extends ReadWalker {
         String OAValue;
         if(!read.isUnmapped()){
             OAValue = String.format("%s,%s,%s,%s,%s,%s;",
-                    read.getContig().replace(",", "_"),
+                    read.getContig().replace(OA_SEPARATOR, "_"),
                     read.getStart(),
                     read.isReverseStrand() ? "-" : "+",
                     read.getCigar().toString(),

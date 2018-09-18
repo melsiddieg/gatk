@@ -335,8 +335,8 @@ public class Mutect2FilteringEngine {
         final int[] ADs = tumorGenotype.getAD();
         final int altCount = ADs[maxFractionIndex + 1];
 
-        if (tumorGenotype.hasAnyAttribute(OriginalAlignment.OA_NOT_CURRENT_CONTIG) & vc.isBiallelic()) {
-            int nonMtOa = Integer.parseInt(tumorGenotype.getAnyAttribute(OriginalAlignment.OA_NOT_CURRENT_CONTIG).toString());
+        if (tumorGenotype.hasAnyAttribute(GATKVCFConstants.ORIGINAL_CONTIG_MISMATCH_KEY) & vc.isBiallelic()) {
+            int nonMtOa = Integer.parseInt(tumorGenotype.getAnyAttribute(GATKVCFConstants.ORIGINAL_CONTIG_MISMATCH_KEY).toString());
             if ((double) nonMtOa / altCount > MTFAC.non_mt_alt_by_alt) {
                 filterResult.addFilter(GATKVCFConstants.CHIMERIC_ORIGINAL_ALIGNMENT_FILTER_NAME);
             }
@@ -349,7 +349,7 @@ public class Mutect2FilteringEngine {
             Double depth = vc.getAttributeAsDouble("DP", 1);
             Double TLODD = TLOD / depth;
             if (TLODD < MTFAC.tlod_by_depth) {
-                filterResult.addFilter(GATKVCFConstants.TLOD_BY_DEPTH_FILTER_NAME);
+                filterResult.addFilter(GATKVCFConstants.LOW_AVG_ALT_QUALITY_FILTER_NAME);
             }
         }
     }
@@ -386,7 +386,6 @@ public class Mutect2FilteringEngine {
         applyInsufficientEvidenceFilter(MTFAC, vc, filterResult);
         applyDuplicatedAltReadFilter(MTFAC, vc, filterResult);
         applyStrandArtifactFilter(MTFAC, vc, filterResult);
-        applyContaminationFilter(MTFAC, vc, filterResult);
         applyBaseQualityFilter(MTFAC, vc, filterResult);
         applyMappingQualityFilter(MTFAC, vc, filterResult);
 
@@ -398,7 +397,5 @@ public class Mutect2FilteringEngine {
     int[] getIntArrayTumorField(final VariantContext vc, final String key) {
         return GATKProtectedVariantContextUtils.getAttributeAsIntArray(vc.getGenotype(tumorSample), key, () -> null, 0);
     }
-
-
 
 }

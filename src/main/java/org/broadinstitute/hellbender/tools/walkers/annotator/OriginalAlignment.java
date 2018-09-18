@@ -5,7 +5,6 @@ import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.GenotypeBuilder;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFormatHeaderLine;
-import htsjdk.variant.vcf.VCFHeaderLineType;
 import org.broadinstitute.barclay.help.DocumentedFeature;
 import org.broadinstitute.hellbender.engine.ReferenceContext;
 import org.broadinstitute.hellbender.tools.AddOriginalAlignmentTags;
@@ -14,14 +13,29 @@ import org.broadinstitute.hellbender.utils.genotyper.ReadLikelihoods;
 import org.broadinstitute.hellbender.utils.help.HelpConstants;
 import org.broadinstitute.hellbender.utils.logging.OneShotLogger;
 import org.broadinstitute.hellbender.utils.variant.GATKVCFConstants;
+import org.broadinstitute.hellbender.utils.variant.GATKVCFHeaderLines;
+
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+/**
+ * Original Alignment annotation counts the number of alt reads where the original alignment contig doesn't match the current alignment contig
+ *
+ * <p>If reads were realigned to multiple references (for example the full human reference followed by just the
+ * mitochondria) and the original alignment tag was recorded before realigning, then we can count the number of alt
+ * reads that have been realigned from other contigs to this one. This can be useful for downstream filtering if an alt
+ * allele has all of most of its support originally from a different contig. In the mitochondria case this can be useful
+ * for filtering known NuMTs that are present in other contigs in the reference.  </p>
+ *
+ * <h3>Caveat</h3>
+ * <p>This annotation can only be calculated if an OA tag is present in the bam and can only be run by Mutect2.</p>
+ *
+ */
 @DocumentedFeature(groupName= HelpConstants.DOC_CAT_ANNOTATORS, groupSummary=HelpConstants.DOC_CAT_ANNOTATORS_SUMMARY, summary="Number of alt reads with an OA tag that doesn't match the current alignment contig.")
 public class OriginalAlignment extends GenotypeAnnotation implements Annotation {
     protected final OneShotLogger warning = new OneShotLogger(this.getClass());
-    public static final String OA_NOT_CURRENT_CONTIG = "OA_NOT_CURRENT_CONTIG";
 
     @Override
     public void annotate(ReferenceContext ref, VariantContext vc, Genotype g, GenotypeBuilder gb, ReadLikelihoods<Allele> likelihoods) {
@@ -31,7 +45,7 @@ public class OriginalAlignment extends GenotypeAnnotation implements Annotation 
 
         final double[] tumorLods = GATKProtectedVariantContextUtils.getAttributeAsDoubleArray(vc, GATKVCFConstants.TUMOR_LOD_KEY, () -> null, -1);
         if (tumorLods==null) {
-            warning.warn("One or more variant contexts is missing the 'TLOD' annotation, StrandArtifact will not be computed for these VariantContexts");
+            warning.warn(String.format("One or more variant contexts is missing the 'TLOD' annotation, %s will not be computed for these VariantContexts", GATKVCFConstants.ORIGINAL_CONTIG_MISMATCH_KEY));
             return;
         }
         final int indexOfMaxTumorLod = MathUtils.maxElementIndex(tumorLods);
@@ -43,16 +57,16 @@ public class OriginalAlignment extends GenotypeAnnotation implements Annotation 
                 .filter(ba -> ba.read.hasAttribute(AddOriginalAlignmentTags.OA_TAG_NAME) && ba.isInformative() && ba.allele.equals(altAlelle) &&
                         AddOriginalAlignmentTags.getOAContig(ba.read).equals(currentContig))
                 .count();
-        gb.attribute(OA_NOT_CURRENT_CONTIG, nonChrMAlt);
+        gb.attribute(GATKVCFConstants.ORIGINAL_CONTIG_MISMATCH_KEY, nonChrMAlt);
     }
 
     @Override
     public List<VCFFormatHeaderLine> getDescriptions() {
-        return Arrays.asList(new VCFFormatHeaderLine(OA_NOT_CURRENT_CONTIG, 1, VCFHeaderLineType.Integer, "Number of alt reads whose original alignment doesn't match the current contig."));
+        return Collections.singletonList(GATKVCFHeaderLines.getFormatLine(getKeyNames().get(0)));
     }
 
     @Override
     public List<String> getKeyNames() {
-        return Arrays.asList(OA_NOT_CURRENT_CONTIG);
+        return Arrays.asList(GATKVCFConstants.ORIGINAL_CONTIG_MISMATCH_KEY);
     }
 }

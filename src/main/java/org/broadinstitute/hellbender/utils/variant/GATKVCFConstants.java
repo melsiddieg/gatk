@@ -136,6 +136,8 @@ public final class GATKVCFConstants {
     public static final String ROF_POSTERIOR_KEY =                  "P_RO"; // For read orientation filter
     public static final String ROF_PRIOR_KEY =                      "P_PRIOR_RO";
     public static final String ROF_TYPE_KEY =                       "ROF_TYPE";
+    public static final String ORIGINAL_CONTIG_MISMATCH_KEY =       "ORIGINAL_CONTIG_MISMATCH";
+    public static final String POTENTIAL_POLYMORPHIC_NUMT_KEY =                         "POTENTIAL_POLYMORPHIC_NUMT";
 
     //FILTERS
     /* Note that many filters used throughout GATK (most notably in VariantRecalibration) are dynamic,
@@ -160,7 +162,7 @@ public final class GATKVCFConstants {
     public final static String READ_ORIENTATION_ARTIFACT_FILTER_NAME =          "read_orientation_artifact";
     public final static String BAD_HAPLOTYPE_FILTER_NAME =                      "bad_haplotype";
     public final static String CHIMERIC_ORIGINAL_ALIGNMENT_FILTER_NAME =        "chimeric_original_alignment"; //mitochondria
-    public final static String TLOD_BY_DEPTH_FILTER_NAME =                      "tlod_by_depth"; //mitochondria
+    public final static String LOW_AVG_ALT_QUALITY_FILTER_NAME =                "low_avg_alt_quality"; //mitochondria
 
     public static final List<String> MUTECT_FILTER_NAMES = Arrays.asList(STR_CONTRACTION_FILTER_NAME,
             PON_FILTER_NAME, CLUSTERED_EVENTS_FILTER_NAME, TUMOR_LOD_FILTER_NAME, GERMLINE_RISK_FILTER_NAME,
@@ -171,9 +173,8 @@ public final class GATKVCFConstants {
             READ_ORIENTATION_ARTIFACT_FILTER_NAME, BAD_HAPLOTYPE_FILTER_NAME);
 
     public static final List<String> MITOCHONDRIAL_FILTER_NAMES = Arrays.asList(TUMOR_LOD_FILTER_NAME,
-            DUPLICATED_EVIDENCE_FILTER_NAME, CHIMERIC_ORIGINAL_ALIGNMENT_FILTER_NAME, TLOD_BY_DEPTH_FILTER_NAME,
-            MEDIAN_BASE_QUALITY_FILTER_NAME, MEDIAN_MAPPING_QUALITY_FILTER_NAME, STRAND_ARTIFACT_FILTER_NAME,
-            CONTAMINATION_FILTER_NAME);
+            DUPLICATED_EVIDENCE_FILTER_NAME, CHIMERIC_ORIGINAL_ALIGNMENT_FILTER_NAME, LOW_AVG_ALT_QUALITY_FILTER_NAME,
+            MEDIAN_BASE_QUALITY_FILTER_NAME, MEDIAN_MAPPING_QUALITY_FILTER_NAME, STRAND_ARTIFACT_FILTER_NAME);
 
     // Symbolic alleles
     public final static String SYMBOLIC_ALLELE_DEFINITION_HEADER_TAG = "ALT";
