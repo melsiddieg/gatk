@@ -506,7 +506,8 @@ public class Mutect2IntegrationTest extends CommandLineProgramTest {
                 "-L", "chrM:1-1000",
                 "-min-pruning", "5",
                 "--annotation", "OriginalAlignment",
-                "--" + M2ArgumentCollection.MEDIAN_AUTOSOMAL_COVERAGE_LONG_NAME, "1556", //arbitrary "autosomal" mean coverage used only for testing
+                //TODO:move to MitochondrialCallerTest?
+                "--" + MitochondrialCallerArgumentCollection.MEDIAN_AUTOSOMAL_COVERAGE_LONG_NAME, "1556", //arbitrary "autosomal" mean coverage used only for testing
                 "-O", unfilteredVcf.getAbsolutePath());
         runCommandLine(args);
 

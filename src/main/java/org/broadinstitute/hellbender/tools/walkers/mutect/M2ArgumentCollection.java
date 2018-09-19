@@ -37,7 +37,6 @@ public class M2ArgumentCollection extends AssemblyBasedCallerArgumentCollection 
     public static final String IGNORE_ITR_ARTIFACTS_LONG_NAME = "ignore-itr-artifacts";
     public static final String ARTIFACT_PRIOR_TABLE_NAME = "orientation-bias-artifact-priors";
     public static final String GET_AF_FROM_AD_LONG_NAME = "get-af-from-ad";
-    public static final String MEDIAN_AUTOSOMAL_COVERAGE_LONG_NAME = "median-autosomal-coverage";
 
     public static final double DEFAULT_AF_FOR_TUMOR_ONLY_CALLING = 5e-8;
     public static final double DEFAULT_AF_FOR_TUMOR_NORMAL_CALLING = 1e-6;
@@ -170,11 +169,12 @@ public class M2ArgumentCollection extends AssemblyBasedCallerArgumentCollection 
     @Argument(fullName = GET_AF_FROM_AD_LONG_NAME, doc="Use allelic depth to calculate tumor allele fraction; recommended for mitochondrial applications", optional = true)
     public boolean calculateAFfromAD = false;
 
-    /**
-     * Used to model autosomal coverage when calling mitochondria. The median tends to be a more robust center statistic.
-     */
-    @Advanced
-    @Argument(fullName = MEDIAN_AUTOSOMAL_COVERAGE_LONG_NAME, doc="For mitochondrial calling only; Annotate possible polymorphic NuMT based on Poisson distribution given median autosomal coverage", optional = true)
-    public double autosomalCoverage;
+    public void copyFromMitochondrialArgs(MitochondrialCallerArgumentCollection mitoArgs, String sampleName) {
+        tumorSample = sampleName;
+        emissionLod = mitoArgs.emissionLod;
+        initialTumorLod = mitoArgs.initialLod;
+        maxMnpDistance = mitoArgs.maxMnpDistance;
+        calculateAFfromAD = mitoArgs.calculateAFfromAD;
+    }
 
 }

@@ -18,7 +18,6 @@ import org.broadinstitute.hellbender.engine.ReferenceContext;
 import org.broadinstitute.hellbender.utils.variant.GATKVCFConstants;
 import org.broadinstitute.hellbender.utils.variant.GATKVCFHeaderLines;
 
-import javax.swing.text.html.Option;
 import java.io.File;
 import java.util.Optional;
 import java.util.Set;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
  * <p>
  * <h3>Usage example</h3>
  * <pre>
- * gatk FilterMitochondrialMutectCalls \
+ * gatk FilterMitochondrialCalls \
  *   -V mitochondria.vcf.gz \
  *   -O filtered.vcf.gz
  * </pre>
@@ -40,7 +39,7 @@ import java.util.stream.Collectors;
         programGroup = VariantFilteringProgramGroup.class
 )
 @DocumentedFeature
-public final class FilterMitochondrialMutectCalls extends VariantWalker {
+public final class FilterMitochondrialCalls extends VariantWalker {
 
     @Argument(fullName = StandardArgumentDefinitions.OUTPUT_LONG_NAME,
             shortName = StandardArgumentDefinitions.OUTPUT_SHORT_NAME,
@@ -60,7 +59,7 @@ public final class FilterMitochondrialMutectCalls extends VariantWalker {
         final Set<VCFHeaderLine> headerLines = inputHeader.getMetaDataInSortedOrder().stream()
                 .filter(line -> !line.getKey().equals(Mutect2FilteringEngine.FILTERING_STATUS_VCF_KEY)) //remove header line from Mutect2 stating that calls are unfiltered.
                 .collect(Collectors.toSet());
-        headerLines.add(new VCFHeaderLine(Mutect2FilteringEngine.FILTERING_STATUS_VCF_KEY, "These calls have been filtered by " + FilterMitochondrialMutectCalls.class.getSimpleName() + " to label false positives with a list of failed filters and true positives with PASS."));
+        headerLines.add(new VCFHeaderLine(Mutect2FilteringEngine.FILTERING_STATUS_VCF_KEY, "These calls have been filtered by " + FilterMitochondrialCalls.class.getSimpleName() + " to label false positives with a list of failed filters and true positives with PASS."));
 
         GATKVCFConstants.MITOCHONDRIAL_FILTER_NAMES.stream().map(GATKVCFHeaderLines::getFilterLine).forEach(headerLines::add);
 
