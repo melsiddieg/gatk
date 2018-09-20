@@ -22,7 +22,12 @@
   "CNVGermlineCaseScatteredWorkflow.intervals": "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/ice_targets_chr20xy.interval_list",
   "CNVGermlineCaseScatteredWorkflow.num_intervals_per_scatter": 30,
   "CNVGermlineCaseScatteredWorkflow.num_samples_per_scatter_block": 2,
-  "CNVGermlineCaseScatteredWorkflow.gcnv_max_calling_iters": 5,
+  "CNVGermlineCaseScatteredWorkflow.gcnv_max_advi_iter_first_epoch": 10,
+  "CNVGermlineCaseScatteredWorkflow.gcnv_log_emission_sampling_rounds": 1,
+  "CNVGermlineCaseScatteredWorkflow.gcnv_log_emission_samples_per_round": 1,
+  "CNVGermlineCaseScatteredWorkflow.gcnv_max_advi_iter_subsequent_epochs": 1,
+  "CNVGermlineCaseScatteredWorkflow.gcnv_max_copy_number": 3,
+  "CNVGermlineCaseScatteredWorkflow.gcnv_max_calling_iters": 1,
   "CNVGermlineCaseScatteredWorkflow.ref_fasta_dict": "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/Homo_sapiens_assembly19.truncated.dict",
   "CNVGermlineCaseScatteredWorkflow.ref_fasta_fai": "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/Homo_sapiens_assembly19.truncated.fasta.fai",
   "CNVGermlineCaseScatteredWorkflow.ref_fasta": "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/Homo_sapiens_assembly19.truncated.fasta"
