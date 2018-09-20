@@ -11,6 +11,7 @@ import org.broadinstitute.barclay.argparser.CommandLineProgramProperties;
 import org.broadinstitute.barclay.help.DocumentedFeature;
 import org.broadinstitute.hellbender.cmdline.StandardArgumentDefinitions;
 import org.broadinstitute.hellbender.engine.*;
+import org.broadinstitute.hellbender.exceptions.UserException;
 import picard.cmdline.programgroups.VariantFilteringProgramGroup;
 import org.broadinstitute.hellbender.engine.FeatureContext;
 import org.broadinstitute.hellbender.engine.ReadsContext;
@@ -19,6 +20,7 @@ import org.broadinstitute.hellbender.utils.variant.GATKVCFConstants;
 import org.broadinstitute.hellbender.utils.variant.GATKVCFHeaderLines;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,9 +71,13 @@ public final class FilterMitochondrialCalls extends VariantWalker {
         vcfWriter = createVCFWriter(new File(outputVcf));
         vcfWriter.writeHeader(vcfHeader);
 
-        final String sampleName = getSampleName();
+        ArrayList<String> allSampleNames = vcfHeader.getSampleNamesInOrder();
+        if(allSampleNames.size() != 1) {
+            throw new UserException(String.format("Expected single sample VCF to filter, but there were %s samples.", allSampleNames.size()));
+        }
 
-        filteringEngine = new Mutect2FilteringEngine(MTFAC, sampleName, Optional.empty());
+        final String sampleName = allSampleNames.get(0);
+        filteringEngine = new Mutect2FilteringEngine(MTFAC, sampleName, Optional.empty(), GATKVCFConstants.LOD_KEY);
     }
 
     @Override
@@ -91,12 +97,5 @@ public final class FilterMitochondrialCalls extends VariantWalker {
         if (vcfWriter != null) {
             vcfWriter.close();
         }
-    }
-
-    /**
-     * Sample is stored as Tumor sample due to running Mutect2
-     */
-    private String getSampleName() {
-        return getHeaderForVariants().getMetaDataLine(Mutect2Engine.TUMOR_SAMPLE_KEY_IN_VCF_HEADER).getValue();
     }
 }

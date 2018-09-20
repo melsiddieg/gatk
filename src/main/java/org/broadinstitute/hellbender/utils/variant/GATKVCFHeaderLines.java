@@ -65,7 +65,7 @@ public class GATKVCFHeaderLines {
         //Mitochondrial M2-related filters
         addFilterLine(new VCFFilterHeaderLine(CHIMERIC_ORIGINAL_ALIGNMENT_FILTER_NAME, "NuMT variant with too many ALT reads originally from autosome"));
         addFilterLine(new VCFFilterHeaderLine(LOW_AVG_ALT_QUALITY_FILTER_NAME, "Low average alt quality"));
-
+        addFilterLine(new VCFFilterHeaderLine(LOW_LOD_FILTER_NAME, "Variant does not meet likelihood threshold"));
 
         addFormatLine(new VCFFormatHeaderLine(ALLELE_BALANCE_KEY, 1, VCFHeaderLineType.Float, "Allele balance for each het genotype"));
         addFormatLine(new VCFFormatHeaderLine(MAPPING_QUALITY_ZERO_BY_SAMPLE_KEY, 1, VCFHeaderLineType.Integer, "Number of Mapping Quality Zero Reads per sample"));
@@ -186,8 +186,9 @@ public class GATKVCFHeaderLines {
         addInfoLine(new VCFInfoHeaderLine(POPULATION_AF_VCF_ATTRIBUTE, VCFHeaderLineCount.A, VCFHeaderLineType.Float, "population allele frequencies of alt alleles"));
         addInfoLine(new VCFInfoHeaderLine(GERMLINE_POSTERIORS_VCF_ATTRIBUTE, VCFHeaderLineCount.A, VCFHeaderLineType.Float, "Posterior probability for alt allele to be germline variants"));
         addInfoLine(new VCFInfoHeaderLine(POSTERIOR_PROB_OF_CONTAMINATION_ATTRIBUTE, 1, VCFHeaderLineType.Float, "Posterior probability for alt allele to be due to contamination"));
-
-
         addInfoLine(new VCFInfoHeaderLine(NORMAL_ARTIFACT_LOD_ATTRIBUTE, VCFHeaderLineCount.A, VCFHeaderLineType.Float, "log odds of artifact in normal with same allele fraction as tumor"));
+
+        // Mitochondria info lines
+        addInfoLine(new VCFInfoHeaderLine(LOD_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Float, "LOD score for variant"));
     }
 }

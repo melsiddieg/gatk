@@ -34,7 +34,7 @@ import java.util.List;
  *
  */
 @DocumentedFeature(groupName= HelpConstants.DOC_CAT_ANNOTATORS, groupSummary=HelpConstants.DOC_CAT_ANNOTATORS_SUMMARY, summary="Number of alt reads with an OA tag that doesn't match the current alignment contig.")
-public class OriginalAlignment extends GenotypeAnnotation implements Annotation {
+public class OriginalAlignment extends GenotypeAnnotation implements StandardMitochondrialAnnotation {
     protected final OneShotLogger warning = new OneShotLogger(this.getClass());
 
     @Override
@@ -43,13 +43,13 @@ public class OriginalAlignment extends GenotypeAnnotation implements Annotation 
         Utils.nonNull(vc);
         Utils.nonNull(likelihoods);
 
-        final double[] tumorLods = GATKProtectedVariantContextUtils.getAttributeAsDoubleArray(vc, GATKVCFConstants.TUMOR_LOD_KEY, () -> null, -1);
-        if (tumorLods==null) {
-            warning.warn(String.format("One or more variant contexts is missing the 'TLOD' annotation, %s will not be computed for these VariantContexts", GATKVCFConstants.ORIGINAL_CONTIG_MISMATCH_KEY));
+        final double[] lods = GATKProtectedVariantContextUtils.getAttributeAsDoubleArray(vc, GATKVCFConstants.LOD_KEY, () -> null, -1);
+        if (lods==null) {
+            warning.warn(String.format("One or more variant contexts is missing the 'LOD' annotation, %s will not be computed for these VariantContexts", GATKVCFConstants.ORIGINAL_CONTIG_MISMATCH_KEY));
             return;
         }
-        final int indexOfMaxTumorLod = MathUtils.maxElementIndex(tumorLods);
-        final Allele altAlelle = vc.getAlternateAllele(indexOfMaxTumorLod);
+        final int indexOfMaxLod = MathUtils.maxElementIndex(lods);
+        final Allele altAlelle = vc.getAlternateAllele(indexOfMaxLod);
         final Collection<ReadLikelihoods<Allele>.BestAllele> bestAlleles = likelihoods.bestAllelesBreakingTies(g.getSampleName());
         final String currentContig = ref.getInterval().getContig();
 

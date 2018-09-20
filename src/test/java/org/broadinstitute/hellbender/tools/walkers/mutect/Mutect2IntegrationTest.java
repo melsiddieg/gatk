@@ -505,9 +505,6 @@ public class Mutect2IntegrationTest extends CommandLineProgramTest {
                 "-R", MITO_REF.getAbsolutePath(),
                 "-L", "chrM:1-1000",
                 "-min-pruning", "5",
-                "--annotation", "OriginalAlignment",
-                //TODO:move to MitochondrialCallerTest?
-                "--" + MitochondrialCallerArgumentCollection.MEDIAN_AUTOSOMAL_COVERAGE_LONG_NAME, "1556", //arbitrary "autosomal" mean coverage used only for testing
                 "-O", unfilteredVcf.getAbsolutePath());
         runCommandLine(args);
 
@@ -523,9 +520,6 @@ public class Mutect2IntegrationTest extends CommandLineProgramTest {
                 "chrM:310-310 [T*, TC]",
                 "chrM:750-750 [A*, G]");
         Assert.assertTrue(expectedKeys.stream().allMatch(variantKeys::contains));
-
-        Assert.assertEquals(variants.get(0).getGenotype("NA12878").getAnyAttribute(GATKVCFConstants.ORIGINAL_CONTIG_MISMATCH_KEY), "0");
-        Assert.assertEquals(variants.get(0).getGenotype("NA12878").getAnyAttribute(GATKVCFConstants.POTENTIAL_POLYMORPHIC_NUMT_KEY), "true");
     }
 
    @Test
@@ -698,7 +692,7 @@ public class Mutect2IntegrationTest extends CommandLineProgramTest {
         return new ImmutablePair<>(sensitivity, fdr);
     }
 
-    private static String keyForVariant( final VariantContext variant ) {
+    protected static String keyForVariant( final VariantContext variant ) {
         return String.format("%s:%d-%d %s", variant.getContig(), variant.getStart(), variant.getEnd(), variant.getAlleles());
     }
 }

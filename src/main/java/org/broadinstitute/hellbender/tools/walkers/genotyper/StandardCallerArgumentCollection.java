@@ -8,6 +8,7 @@ import org.broadinstitute.barclay.argparser.ArgumentCollection;
 import org.broadinstitute.barclay.argparser.Hidden;
 import org.broadinstitute.hellbender.engine.FeatureInput;
 import org.broadinstitute.hellbender.tools.walkers.genotyper.afcalc.AFCalculatorImplementation;
+import org.broadinstitute.hellbender.tools.walkers.haplotypecaller.AssemblyBasedCallerArgumentCollection;
 import org.broadinstitute.hellbender.utils.Utils;
 
 import java.io.File;
@@ -20,6 +21,12 @@ import java.util.Map;
  */
 public class StandardCallerArgumentCollection implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    public StandardCallerArgumentCollection(){}
+
+    public StandardCallerArgumentCollection(StandardCallerArgumentCollection other) {
+        copyStandardCallerArgsFrom(other);
+    }
 
     /**
      * Copies the values from other into this StandardCallerArgumentCollection

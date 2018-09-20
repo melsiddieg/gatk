@@ -60,13 +60,13 @@ public class PolymorphicNuMT extends GenotypeAnnotation implements Annotation {
         Utils.nonNull(gb);
         Utils.nonNull(vc);
         Utils.nonNull(likelihoods);
-        final double[] tumorLods = GATKProtectedVariantContextUtils.getAttributeAsDoubleArray(vc, GATKVCFConstants.TUMOR_LOD_KEY, () -> null, -1);
-        if (tumorLods==null) {
-            warning.warn(String.format("One or more variant contexts is missing the 'TLOD' annotation, %s will not be computed for these VariantContexts", GATKVCFConstants.POTENTIAL_POLYMORPHIC_NUMT_KEY));
+        final double[] lods = GATKProtectedVariantContextUtils.getAttributeAsDoubleArray(vc, GATKVCFConstants.LOD_KEY, () -> null, -1);
+        if (lods==null) {
+            warning.warn(String.format("One or more variant contexts is missing the 'LOD' annotation, %s will not be computed for these VariantContexts", GATKVCFConstants.POTENTIAL_POLYMORPHIC_NUMT_KEY));
             return;
         }
-        final int indexOfMaxTumorLod = MathUtils.maxElementIndex(tumorLods);
-        final Allele altAlelle = vc.getAlternateAllele(indexOfMaxTumorLod);
+        final int indexOfMaxLod = MathUtils.maxElementIndex(lods);
+        final Allele altAlelle = vc.getAlternateAllele(indexOfMaxLod);
         Collection<ReadLikelihoods<Allele>.BestAllele> bestAlleles = likelihoods.bestAllelesBreakingTies(g.getSampleName());
         final long numAltReads = bestAlleles.stream().filter(ba -> ba.isInformative() && ba.allele.equals(altAlelle)).count();
         if ( (numAltReads > MIN_AUTOSOMAL_HET && numAltReads < MAX_AUTOSOMAL_HET) || (numAltReads > MIN_AUTOSOMAL_HOM_ALT && numAltReads < MAX_AUTOSOMAL_HOM_ALT) ) {

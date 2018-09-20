@@ -15,7 +15,7 @@ public final class FilterMitochondrialCallsIntegrationTest extends CommandLinePr
     private File localTestData = new File(getTestDataDir(), "mitochondria/unfiltered.vcf");
     private static final List<Set<String>> expectedFilters = new ArrayList<>(Arrays.<Set<String>>asList(Collections.EMPTY_SET,
             new HashSet<>(Arrays.asList(GATKVCFConstants.CHIMERIC_ORIGINAL_ALIGNMENT_FILTER_NAME)),
-            new HashSet<>(Arrays.asList(GATKVCFConstants.TUMOR_LOD_FILTER_NAME, GATKVCFConstants.LOW_AVG_ALT_QUALITY_FILTER_NAME)),
+            new HashSet<>(Arrays.asList(GATKVCFConstants.LOW_LOD_FILTER_NAME, GATKVCFConstants.LOW_AVG_ALT_QUALITY_FILTER_NAME)),
             Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_SET));
 
     @Test()

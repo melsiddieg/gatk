@@ -82,7 +82,7 @@ public class MitochondrialCaller extends AssemblyRegionWalker {
 
     @Override
     public List<ReadFilter> getDefaultReadFilters() {
-        List<ReadFilter> readFilters = Mutect2Engine.makeStandardMutect2ReadFilters();
+        List<ReadFilter> readFilters = new ArrayList<>(Mutect2Engine.makeStandardMutect2ReadFilters());
         readFilters.add(ReadFilterLibrary.NON_CHIMERIC_OA_FILTER);
         return readFilters;
     }
@@ -94,8 +94,8 @@ public class MitochondrialCaller extends AssemblyRegionWalker {
 
     @Override
     public List<Class<? extends Annotation>> getDefaultVariantAnnotationGroups() {
-        Collection<Class<? extends Annotation>> annotations = Mutect2Engine.getStandardMutect2AnnotationGroups();
-        annotations.add(OriginalAlignment.class);
+        List<Class<? extends Annotation>> annotations = new ArrayList<>(Mutect2Engine.getStandardMutect2AnnotationGroups());
+        annotations.add(StandardMitochondrialAnnotation.class);
         return new ArrayList<>(annotations);
     }
 
@@ -109,13 +109,12 @@ public class MitochondrialCaller extends AssemblyRegionWalker {
 
     @Override
     public void onTraversalStart() {
-        M2ArgumentCollection m2Args =  new M2ArgumentCollection();
         Set<String> samples =  ReadUtils.getSamplesFromHeader(getHeaderForReads());
         if (samples.size() != 1 ){
             throw new UserException(String.format("The input bam has more than one sample: %s", Arrays.toString(samples.toArray())));
         }
         String sampleName = samples.iterator().next();
-        m2Args.copyFromMitochondrialArgs(MTAC, sampleName);
+        M2ArgumentCollection m2Args =  new M2ArgumentCollection(MTAC, sampleName);
         VariantAnnotatorEngine annotatorEngine = new VariantAnnotatorEngine(makeVariantAnnotations(), null, Collections.emptyList(), false);
         m2Engine = new Mutect2Engine(m2Args, createOutputBamIndex, createOutputBamMD5, getHeaderForReads(), referenceArguments.getReferenceFileName(), annotatorEngine, GATKVCFConstants.LOD_KEY);
         vcfWriter = createVCFWriter(outputVCF);

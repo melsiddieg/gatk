@@ -5,6 +5,7 @@ import org.broadinstitute.barclay.argparser.Argument;
 import org.broadinstitute.barclay.argparser.ArgumentCollection;
 import org.broadinstitute.barclay.argparser.Hidden;
 import org.broadinstitute.hellbender.tools.walkers.genotyper.StandardCallerArgumentCollection;
+import org.broadinstitute.hellbender.tools.walkers.mutect.MitochondrialCallerArgumentCollection;
 import org.broadinstitute.hellbender.utils.haplotype.HaplotypeBAMWriter;
 import org.broadinstitute.hellbender.utils.smithwaterman.SmithWatermanAligner;
 
@@ -123,4 +124,23 @@ public abstract class AssemblyBasedCallerArgumentCollection extends StandardCall
     @Argument(fullName = SMITH_WATERMAN_LONG_NAME, doc = "Which Smith-Waterman implementation to use, generally FASTEST_AVAILABLE is the right choice", optional = true)
     public SmithWatermanAligner.Implementation smithWatermanImplementation = SmithWatermanAligner.Implementation.JAVA;
 
+    public AssemblyBasedCallerArgumentCollection(){}
+
+    //TODO: copy the arg collections themselves
+    public AssemblyBasedCallerArgumentCollection(AssemblyBasedCallerArgumentCollection other) {
+        super(other);
+        this.assemblyRegionTrimmerArgs = other.assemblyRegionTrimmerArgs;
+        this.assemblerArgs = other.assemblerArgs;
+        this.likelihoodArgs = other.likelihoodArgs;
+        this.debug = other.debug;
+        this.useFilteredReadMapForAnnotations = other.useFilteredReadMapForAnnotations;
+        this.bamOutputPath = other.bamOutputPath;
+        this.bamWriterType = other.bamWriterType;
+        this.dontUseSoftClippedBases = other.dontUseSoftClippedBases;
+        this.captureAssemblyFailureBAM = other.captureAssemblyFailureBAM;
+        this.errorCorrectReads = other.errorCorrectReads;
+        this.doNotRunPhysicalPhasing = other.doNotRunPhysicalPhasing;
+        this.minBaseQualityScore = other.minBaseQualityScore;
+        this.smithWatermanImplementation = other.smithWatermanImplementation;
+    }
 }

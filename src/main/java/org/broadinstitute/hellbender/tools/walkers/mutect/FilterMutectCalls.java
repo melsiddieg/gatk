@@ -104,7 +104,7 @@ public final class FilterMutectCalls extends TwoPassVariantWalker {
         final VCFHeaderLine normalSampleHeaderLine = getHeaderForVariants().getMetaDataLine(Mutect2Engine.NORMAL_SAMPLE_KEY_IN_VCF_HEADER);
         final Optional<String> normalSample = normalSampleHeaderLine == null ? Optional.empty() : Optional.of(normalSampleHeaderLine.getValue());
 
-        filteringEngine = new Mutect2FilteringEngine(MTFAC, tumorSample, normalSample);
+        filteringEngine = new Mutect2FilteringEngine(MTFAC, tumorSample, normalSample, GATKVCFConstants.TUMOR_LOD_KEY);
         filteringFirstPass = new FilteringFirstPass(tumorSample);
     }
 
