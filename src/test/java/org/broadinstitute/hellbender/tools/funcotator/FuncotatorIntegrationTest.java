@@ -312,7 +312,7 @@ public class FuncotatorIntegrationTest extends CommandLineProgramTest {
                         "regressionTestVariantSet2.vcf",
                         "Homo_sapiens_assembly19.fasta",
                         FuncotatorTestConstants.REFERENCE_VERSION_HG19
-                }
+                },
         };
     }
 

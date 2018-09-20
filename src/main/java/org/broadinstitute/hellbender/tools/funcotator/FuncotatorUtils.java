@@ -523,8 +523,8 @@ public final class FuncotatorUtils {
         // see 1:1152971 T>C for details
 
         // ONP:
-//        if ( GATKVariantContextUtils.isXnp(seqComp.getAlignedReferenceAllele(), seqComp.getAlignedAlternateAllele()) ) {
-        if ( seqComp.getAlignedReferenceAllele().length() == seqComp.getAlignedAlternateAllele().length() ) {
+        if ( GATKVariantContextUtils.isXnp(seqComp.getAlignedReferenceAllele(), seqComp.getAlignedAlternateAllele()) ) {
+//        if ( seqComp.getAlignedReferenceAllele().length() == seqComp.getAlignedAlternateAllele().length() ) {
             return getCodonChangeStringForOnp(
                     seqComp.getAlignedCodingSequenceReferenceAllele(),
                     seqComp.getAlignedCodingSequenceAlternateAllele(),
@@ -542,6 +542,7 @@ public final class FuncotatorUtils {
             // Insertion:
             if ( GATKVariantContextUtils.isInsertion(seqComp.getAlignedReferenceAllele(), seqComp.getAlignedAlternateAllele()) ) {
 
+                // Frameshift insertion:
                 if ( GATKVariantContextUtils.isFrameshift(seqComp.getAlignedReferenceAllele(), seqComp.getAlignedAlternateAllele()) ) {
 
                     if ( isIndelBetweenCodons(seqComp.getCodingSequenceAlleleStart(), seqComp.getAlignedCodingSequenceAlleleStart(), seqComp.getReferenceAllele(), seqComp.getStrand()) ) {
@@ -557,6 +558,7 @@ public final class FuncotatorUtils {
                                 seqComp.getAlignedCodingSequenceReferenceAllele().toLowerCase() + "fs";
                     }
                 }
+                // In-Frame Insertion:
                 else {
                     if ( isIndelBetweenCodons(seqComp.getCodingSequenceAlleleStart(), seqComp.getAlignedCodingSequenceAlleleStart(), seqComp.getReferenceAllele(), seqComp.getStrand()) ) {
                         final String nextRefCodon = getNextReferenceCodon(seqComp.getTranscriptCodingSequence(), seqComp.getAlignedCodingSequenceAlleleStart(), seqComp.getAlignedReferenceAlleleStop(), seqComp.getStrand());
@@ -590,6 +592,7 @@ public final class FuncotatorUtils {
             }
             // Deletion:
             else {
+                // Frame shift deletion:
                 if ( GATKVariantContextUtils.isFrameshift(seqComp.getAlignedReferenceAllele(), seqComp.getAlignedAlternateAllele()) ) {
                     if ( isIndelBetweenCodons(seqComp.getCodingSequenceAlleleStart(), seqComp.getAlignedCodingSequenceAlleleStart(), seqComp.getReferenceAllele(), seqComp.getStrand()) ) {
 
@@ -625,6 +628,7 @@ public final class FuncotatorUtils {
                         }
                     }
                 }
+                // In-frame deletion:
                 else {
 
                     // Determine how many codons to get:
@@ -744,12 +748,17 @@ public final class FuncotatorUtils {
 
         final String nextRefCodon;
         if ( strand == Strand.POSITIVE ) {
+            // Add 3 to get the "next" codon on the - strand:
             nextRefCodon = referenceSequence.getBaseString().substring(currentAlignedCodingSequenceAlleleStop, currentAlignedCodingSequenceAlleleStop + 3 );
         }
         else {
-            nextRefCodon = ReadUtils.getBasesReverseComplement(
-                    referenceSequence.getBaseString().substring(currentAlignedCodingSequenceAlleleStart - 3, currentAlignedCodingSequenceAlleleStart ).getBytes()
-            );
+            // Subtract 1 because of 1-inclusive genomic positions
+            // Subtract 3 to get the "next" codon on the - strand:
+//            nextRefCodon = ReadUtils.getBasesReverseComplement(
+//                    referenceSequence.getBaseString().substring(currentAlignedCodingSequenceAlleleStart - 1 - 3, currentAlignedCodingSequenceAlleleStart - 1).getBytes()
+//            );
+
+            nextRefCodon = referenceSequence.getBaseString().substring(currentAlignedCodingSequenceAlleleStart - 1 - 3, currentAlignedCodingSequenceAlleleStart - 1);
         }
         return nextRefCodon;
     }

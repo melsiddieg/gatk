@@ -1813,7 +1813,7 @@ public class GencodeFuncotationFactory extends DataSourceFuncotationFactory {
 
          // Check for the optional non-serialized values for sorting:
          // NOTE: This is kind of a kludge:
-         gencodeFuncotationBuilder.setLocusLevel( Integer.valueOf(gtfFeature.getLocusLevel().toString()) );
+         gencodeFuncotationBuilder.setLocusLevel( Integer.valueOf(transcript.getLocusLevel().toString()) );
 
         // Check for existence of Appris Rank and set it:
          gencodeFuncotationBuilder.setApprisRank( getApprisRank( transcript ) );
