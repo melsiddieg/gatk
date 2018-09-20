@@ -5,7 +5,6 @@ import org.broadinstitute.barclay.argparser.Argument;
 import org.broadinstitute.barclay.argparser.ArgumentCollection;
 import org.broadinstitute.barclay.argparser.Hidden;
 import org.broadinstitute.hellbender.tools.walkers.genotyper.StandardCallerArgumentCollection;
-import org.broadinstitute.hellbender.tools.walkers.mutect.MitochondrialCallerArgumentCollection;
 import org.broadinstitute.hellbender.utils.haplotype.HaplotypeBAMWriter;
 import org.broadinstitute.hellbender.utils.smithwaterman.SmithWatermanAligner;
 
