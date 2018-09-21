@@ -24,7 +24,6 @@ import picard.cmdline.programgroups.VariantFilteringProgramGroup;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 
 /**
@@ -187,7 +186,7 @@ public class CNNScoreVariants extends TwoPassVariantWalker {
     private File scoreFile;
     private String scoreKey;
     private Scanner scoreScan;
-    VariantContextWriter vcfWriter;
+    private VariantContextWriter vcfWriter;
 
     private static String resourcePathReadTensor = Resource.LARGE_RUNTIME_RESOURCES_PATH + "/cnn_score_variants/small_2d.json";
     private static String resourcePathReferenceTensor = Resource.LARGE_RUNTIME_RESOURCES_PATH + "/cnn_score_variants/1d_cnn_mix_train_full_bn.json";
@@ -237,14 +236,8 @@ public class CNNScoreVariants extends TwoPassVariantWalker {
             logger.warn("CNNScoreVariants is a single sample tool, but the input VCF has more than 1 sample.");
         }
 
-        scoreKey = getScoreKeyAndCheckModelAndReadsHarmony();
-        if (architecture == null && weights == null) {
-            setArchitectureAndWeightsFromResources();
-        }
-
         // Start the Python process and initialize a stream writer for streaming data to the Python code
         pythonExecutor.start(Collections.emptyList(), enableJournal, pythonProfileResults);
-
         pythonExecutor.initStreamWriter(AsynchronousStreamWriter.stringSerializer);
 
         batchList = new ArrayList<>(transferBatchSize);
@@ -260,8 +253,9 @@ public class CNNScoreVariants extends TwoPassVariantWalker {
             }
             pythonExecutor.sendSynchronousCommand(String.format("tempFile = open('%s', 'w+')" + NL, scoreFile.getAbsolutePath()));
             pythonExecutor.sendSynchronousCommand("import vqsr_cnn" + NL);
-            startPythonSession();
 
+            scoreKey = getScoreKeyAndCheckModelAndReadsHarmony();
+            initializePythonArgsAndModel();
         } catch (IOException e) {
             throw new GATKException("Error when creating temp file and initializing python executor.", e);
         }
@@ -298,7 +292,7 @@ public class CNNScoreVariants extends TwoPassVariantWalker {
             scoreScan.useDelimiter("\\n");
             writeVCFHeader(vcfWriter);
         } catch (IOException e) {
-            throw new GATKException("Error when trying to write annotated VCF.", e);
+            throw new GATKException("Error when trying to temporary score file scanner.", e);
         }
 
     }
@@ -329,8 +323,11 @@ public class CNNScoreVariants extends TwoPassVariantWalker {
     @Override
     public void closeTool() {
         logger.info("Done scoring variants with CNN.");
-        if ( vcfWriter != null ) {
+        if (vcfWriter != null) {
             vcfWriter.close();
+        }
+        if (scoreScan != null){
+            scoreScan.close();
         }
     }
 
@@ -422,15 +419,6 @@ public class CNNScoreVariants extends TwoPassVariantWalker {
         );
     }
 
-    private String getVariantInfoStringOld(final VariantContext variant) {
-        // Create a string that will easily be parsed as a python dictionary
-        String varInfo = "";
-        for (final String attributeKey : variant.getAttributes().keySet()) {
-            varInfo += attributeKey + "=" + variant.getAttribute(attributeKey).toString().replace(" ", "").replace("[", "").replace("]", "") + ";";
-        }
-        return varInfo;
-    }
-
     private String getVariantInfoString(final VariantContext variant) {
         // Create a string that will easily be parsed as a python dictionary
         StringBuilder sb = new StringBuilder(FIFO_STRING_INITIAL_CAPACITY);
@@ -480,22 +468,22 @@ public class CNNScoreVariants extends TwoPassVariantWalker {
         }
     }
 
-    private void setArchitectureAndWeightsFromResources() {
-        if (tensorType.equals(TensorType.read_tensor)) {
-            architecture = IOUtils.writeTempResourceFromPath(resourcePathReadTensor, null).getAbsolutePath();
-            weights = IOUtils.writeTempResourceFromPath(
-                    resourcePathReadTensor.replace(".json", ".hd5"),
-                    null).getAbsolutePath();
-        } else if (tensorType.equals(TensorType.reference)) {
-            architecture = IOUtils.writeTempResourceFromPath(resourcePathReferenceTensor, null).getAbsolutePath();
-            weights = IOUtils.writeTempResourceFromPath(
-                     resourcePathReferenceTensor.replace(".json", ".hd5"), null).getAbsolutePath();
-        } else {
-            throw new GATKException("No default architecture for tensor type:" + tensorType.name());
+    private void initializePythonArgsAndModel(){
+        if (weights == null && architecture == null) {
+            if (tensorType.equals(TensorType.read_tensor)) {
+                architecture = IOUtils.writeTempResourceFromPath(resourcePathReadTensor, null).getAbsolutePath();
+                weights = IOUtils.writeTempResourceFromPath(
+                        resourcePathReadTensor.replace(".json", ".hd5"),
+                        null).getAbsolutePath();
+            } else if (tensorType.equals(TensorType.reference)) {
+                architecture = IOUtils.writeTempResourceFromPath(resourcePathReferenceTensor, null).getAbsolutePath();
+                weights = IOUtils.writeTempResourceFromPath(
+                        resourcePathReferenceTensor.replace(".json", ".hd5"), null).getAbsolutePath();
+            } else {
+                throw new GATKException("No default architecture for tensor type:" + tensorType.name());
+            }
         }
-    }
 
-    private void startPythonSession(){
         String getArgsAndModel;
         if (weights != null && architecture != null) {
             getArgsAndModel = String.format("args, model = vqsr_cnn.start_session_get_args_and_model(%d, %d, '%s', weights_hd5='%s')", intraOpThreads, interOpThreads, architecture, weights) + NL;
@@ -509,6 +497,4 @@ public class CNNScoreVariants extends TwoPassVariantWalker {
         }
         pythonExecutor.sendSynchronousCommand(getArgsAndModel);
     }
-
 }
-

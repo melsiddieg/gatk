@@ -1,6 +1,8 @@
 package org.broadinstitute.hellbender.tools.walkers.validation;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.io.IOException;
 
@@ -19,25 +21,26 @@ import org.broadinstitute.hellbender.engine.ReferenceContext;
 import org.broadinstitute.hellbender.exceptions.UserException;
 import org.broadinstitute.hellbender.engine.AbstractConcordanceWalker;
 
+import org.broadinstitute.hellbender.utils.variant.GATKVCFConstants;
 import picard.cmdline.programgroups.VariantEvaluationProgramGroup;
 
 @CommandLineProgramProperties(
-        summary=VcfInfoConcordance.USAGE_SUMMARY,
-        oneLineSummary=VcfInfoConcordance.USAGE_ONE_LINE_SUMMARY,
+        summary=EvaluateInfoFieldConcordance.USAGE_SUMMARY,
+        oneLineSummary=EvaluateInfoFieldConcordance.USAGE_ONE_LINE_SUMMARY,
         programGroup=VariantEvaluationProgramGroup.class)
 @DocumentedFeature
 @BetaFeature
-public class VcfInfoConcordance extends AbstractConcordanceWalker {
+public class EvaluateInfoFieldConcordance extends AbstractConcordanceWalker {
     static final String USAGE_ONE_LINE_SUMMARY = "Evaluate concordance of info fields in an input VCF against a validated truth VCF";
     static final String USAGE_SUMMARY = "This tool evaluates info fields from an input VCF against a VCF that has been validated and is considered to represent ground truth.\n";
     public static final String SUMMARY_LONG_NAME = "summary";
     public static final String SUMMARY_SHORT_NAME = "S";
     @Argument(doc="A table of summary statistics (true positives, sensitivity, etc.)", fullName="summary", shortName=SUMMARY_SHORT_NAME)
-    protected File summary;
+    protected String summary;
     @Argument(fullName="eval-info-key", shortName="eval-info-key", doc="Info key from eval vcf", optional=true)
-    protected String evalInfoKey = "CNN_2D";
+    protected String evalInfoKey = GATKVCFConstants.CNN_2D_KEY;
     @Argument(fullName="truth-info-key", shortName="truth-info-key", doc="Info key from truth vcf", optional=true)
-    protected String truthInfoKey = "CNN_2D";
+    protected String truthInfoKey = GATKVCFConstants.CNN_2D_KEY;
     @Argument(fullName="epsilon", shortName="epsilon", doc="Difference tolerance", optional=true)
     protected double epsilon = 0.1;
     private final EnumMap<ConcordanceState, MutableLong> snpCounts = new EnumMap<>(ConcordanceState.class);
@@ -112,9 +115,10 @@ public class VcfInfoConcordance extends AbstractConcordanceWalker {
         this.logger.info(String.format("INDEL average delta %f and standard deviation: %f", indelMean, indelStd));
 
         try {
-            InfoConcordanceRecord.InfoConcordanceWriter concordanceWriter = InfoConcordanceRecord.getWriter(this.summary);
+            InfoConcordanceRecord.InfoConcordanceWriter concordanceWriter = InfoConcordanceRecord.getWriter(Paths.get(this.summary));
             concordanceWriter.writeRecord(new InfoConcordanceRecord(VariantContext.Type.SNP, this.evalInfoKey, this.truthInfoKey, snpMean, snpStd));
             concordanceWriter.writeRecord(new InfoConcordanceRecord(VariantContext.Type.INDEL, this.evalInfoKey, this.truthInfoKey, indelMean, indelStd));
+            concordanceWriter.close();
         }
         catch (IOException e) {
             throw new UserException("Encountered an IO exception writing the concordance summary table", e);

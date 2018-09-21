@@ -1,8 +1,11 @@
 package org.broadinstitute.hellbender.tools.walkers.validation;
 
 import htsjdk.variant.variantcontext.VariantContext;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+
 import org.broadinstitute.hellbender.exceptions.UserException;
 
 import org.broadinstitute.hellbender.utils.tsv.DataLine;
@@ -10,6 +13,9 @@ import org.broadinstitute.hellbender.utils.tsv.TableColumnCollection;
 import org.broadinstitute.hellbender.utils.tsv.TableWriter;
 import org.broadinstitute.hellbender.utils.tsv.TableReader;
 
+/**
+ * Keeps track of concordance between two info fields.
+ */
 public class InfoConcordanceRecord {
     private static final String VARIANT_TYPE_COLUMN_NAME = "type";
     private static final String EVAL_INFO_KEY = "eval_info_key";
@@ -52,19 +58,19 @@ public class InfoConcordanceRecord {
         return this.trueKey;
     }
 
-    public static InfoConcordanceWriter getWriter(File outputTable) {
+    public static InfoConcordanceWriter getWriter(Path outputTable) {
         try {
             InfoConcordanceWriter writer = new InfoConcordanceWriter(outputTable);
             return writer;
         }
         catch (IOException e) {
-            throw new UserException(String.format("Encountered an IO exception while reading from %s.", outputTable), e);
+            throw new UserException(String.format("Encountered an IO exception while writing from %s.", outputTable), e);
         }
     }
 
     public static class InfoConcordanceWriter extends TableWriter<InfoConcordanceRecord> {
-        private InfoConcordanceWriter(File output) throws IOException {
-            super(output, new TableColumnCollection(INFO_CONCORDANCE_COLUMN_HEADER));
+        private InfoConcordanceWriter(Path output) throws IOException {
+            super(output.toFile(), new TableColumnCollection(INFO_CONCORDANCE_COLUMN_HEADER));
         }
 
         @Override
@@ -78,8 +84,8 @@ public class InfoConcordanceRecord {
     }
 
     public static class InfoConcordanceReader extends TableReader<InfoConcordanceRecord> {
-        public InfoConcordanceReader(File summary) throws IOException {
-            super(summary);
+        public InfoConcordanceReader(Path summary) throws IOException {
+            super(summary.toFile());
         }
 
         @Override
