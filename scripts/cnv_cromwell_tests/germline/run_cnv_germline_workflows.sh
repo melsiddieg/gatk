@@ -1,5 +1,14 @@
 #!/bin/bash -l
 set -e
+
+MODE=$1
+# We split up the test into CASE in COHORT to reduce overall travis runtime
+if [[ "$MODE" != "COHORT" ]] && [[ "$MODE" != "CASE" ]]; then
+	echo "First argument to this scripts needs to be COHORT or CASE"
+	exit 1
+fi
+
+
 #cd in the directory of the script in order to use relative paths
 script_path=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
 cd "$script_path"
@@ -31,7 +40,11 @@ sed -r "s/__GATK_DOCKER__/broadinstitute\/gatk\:$HASH_TO_USE/g" ${CNV_CROMWELL_T
 echo "Running ========"
 
 # Cohort WES w/ explicit GC correction
-java -jar ${CROMWELL_JAR} run /home/travis/build/broadinstitute/gatk/scripts/cnv_wdl/germline/cnv_germline_cohort_workflow.wdl -i cnv_germline_cohort_workflow_mod.json
+if [ "$MODE" == "COHORT" ]; then
+  java -jar ${CROMWELL_JAR} run /home/travis/build/broadinstitute/gatk/scripts/cnv_wdl/germline/cnv_germline_cohort_workflow.wdl -i cnv_germline_cohort_workflow_mod.json
+fi
 
 # Scattered case WES w/ explicit GC correction
-java -jar ${CROMWELL_JAR} run /home/travis/build/broadinstitute/gatk/scripts/cnv_wdl/germline/cnv_germline_case_scattered_workflow.wdl -i cnv_germline_case_scattered_workflow_mod.json
+if [ "$MODE" == "CASE" ]; then
+  java -jar ${CROMWELL_JAR} run /home/travis/build/broadinstitute/gatk/scripts/cnv_wdl/germline/cnv_germline_case_scattered_workflow.wdl -i cnv_germline_case_scattered_workflow_mod.json
+fi
