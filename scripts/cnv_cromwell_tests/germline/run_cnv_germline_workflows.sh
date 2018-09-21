@@ -40,11 +40,11 @@ sed -r "s/__GATK_DOCKER__/broadinstitute\/gatk\:$HASH_TO_USE/g" ${CNV_CROMWELL_T
 echo "Running ========"
 
 # Cohort WES w/ explicit GC correction
-if [ "$MODE" == "COHORT" ]; then
+if [[ "$MODE" == "COHORT" ]]; then
   java -jar ${CROMWELL_JAR} run /home/travis/build/broadinstitute/gatk/scripts/cnv_wdl/germline/cnv_germline_cohort_workflow.wdl -i cnv_germline_cohort_workflow_mod.json
 fi
 
 # Scattered case WES w/ explicit GC correction
-if [ "$MODE" == "CASE" ]; then
+if [[ "$MODE" == "CASE" ]]; then
   java -jar ${CROMWELL_JAR} run /home/travis/build/broadinstitute/gatk/scripts/cnv_wdl/germline/cnv_germline_case_scattered_workflow.wdl -i cnv_germline_case_scattered_workflow_mod.json
 fi

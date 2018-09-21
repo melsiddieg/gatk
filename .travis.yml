@@ -127,7 +127,7 @@ script:
     echo "Running CNV germline cohort workflow";
     travis_wait 30 bash scripts/cnv_cromwell_tests/germline/run_cnv_germline_workflows.sh COHORT;
   elif [[ $RUN_CNV_GERMLINE_CASE_WDL == true ]]; then
-    echo "Running CNV germline case workflow"
+    echo "Running CNV germline case workflow";
     travis_wait 30 bash scripts/cnv_cromwell_tests/germline/run_cnv_germline_workflows.sh CASE;
   elif [[ $RUN_CNV_SOMATIC_WDL == true ]]; then
     echo "Running CNV somatic workflows";
