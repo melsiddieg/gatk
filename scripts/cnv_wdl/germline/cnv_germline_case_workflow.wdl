@@ -29,6 +29,7 @@ workflow CNVGermlineCaseWorkflow {
     ##################################
     File intervals
     File? blacklist_intervals
+    File? filtered_intervals
     File bam
     File bam_idx
     File contig_ploidy_model_tar
@@ -145,7 +146,7 @@ workflow CNVGermlineCaseWorkflow {
 
     call CNVTasks.ScatterIntervals {
         input:
-            interval_list = PreprocessIntervals.preprocessed_intervals,
+            interval_list = select_first([filtered_intervals, PreprocessIntervals.preprocessed_intervals]),
             num_intervals_per_scatter = num_intervals_per_scatter,
             gatk_docker = gatk_docker,
             preemptible_attempts = preemptible_attempts
