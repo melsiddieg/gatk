@@ -125,9 +125,11 @@ script:
     echo "Can't run cloud tests without keys so don't run tests";
   elif [[ $RUN_CNV_GERMLINE_COHORT_WDL == true ]]; then
     echo "Running CNV germline cohort workflow";
+    export -f travis_wait;
     bash scripts/cnv_cromwell_tests/germline/run_cnv_germline_workflows.sh COHORT;
   elif [[ $RUN_CNV_GERMLINE_CASE_WDL == true ]]; then
     echo "Running CNV germline case workflow";
+    export -f travis_wait;
     bash scripts/cnv_cromwell_tests/germline/run_cnv_germline_workflows.sh CASE;
   elif [[ $RUN_CNV_SOMATIC_WDL == true ]]; then
     echo "Running CNV somatic workflows";
