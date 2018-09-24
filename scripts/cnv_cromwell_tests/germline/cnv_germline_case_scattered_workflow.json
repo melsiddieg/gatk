@@ -1,10 +1,13 @@
 {
   "CNVGermlineCaseScatteredWorkflow.normal_bams": [
     "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/SM-74NEG_20xy-downsampled.bam",
-    "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/SM-74P2T_20xy-downsampled.bam"],
+    "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/SM-74P2T_20xy-downsampled.bam",
+    "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/SM-74P35_20xy-downsampled.bam"
+    ],
   "CNVGermlineCaseScatteredWorkflow.normal_bais": [
     "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/SM-74NEG_20xy-downsampled.bam.bai",
-    "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/SM-74P2T_20xy-downsampled.bam.bai"],
+    "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/SM-74P2T_20xy-downsampled.bam.bai",
+    "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/SM-74P35_20xy-downsampled.bam.bai"],
   "CNVGermlineCaseScatteredWorkflow.contig_ploidy_model_tar": "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/wes-contig-ploidy-model.tar.gz",
   "CNVGermlineCaseScatteredWorkflow.gatk_docker": "__GATK_DOCKER__",
   "CNVGermlineCaseScatteredWorkflow.allosomal_contigs": ["X", "Y"],
@@ -19,7 +22,7 @@
   "CNVGermlineCaseScatteredWorkflow.gcnv_num_thermal_advi_iters": 1,
   "CNVGermlineCaseScatteredWorkflow.intervals": "/home/travis/build/broadinstitute/gatk/src/test/resources/large/cnv_germline_workflows_test_files/ice_targets_chr20xy.interval_list",
   "CNVGermlineCaseScatteredWorkflow.num_intervals_per_scatter": 30,
-  "CNVGermlineCaseScatteredWorkflow.num_samples_per_scatter_block": 1,
+  "CNVGermlineCaseScatteredWorkflow.num_samples_per_scatter_block": 2,
   "CNVGermlineCaseScatteredWorkflow.gcnv_max_advi_iter_first_epoch": 10,
   "CNVGermlineCaseScatteredWorkflow.gcnv_log_emission_sampling_rounds": 1,
   "CNVGermlineCaseScatteredWorkflow.gcnv_log_emission_samples_per_round": 1,
